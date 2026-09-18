@@ -2,39 +2,58 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Enchantment Game</title>
     <link rel="stylesheet" type="text/css" href="../styles/inicio.css" />
 </head>
 
 <body>
     <header>
-        <button>Inicio</button>
-        <button>Sair</button>
+        <button type="button">Início</button>
+        <button type="button">Sair</button>
     </header>
     <main>
-        <div class="selecao-jogador">
-            <div class="cartao-personagem personagem-A" onclick="selecionarPersonagem(event)">
-                <img src="../assets/animacoes/personagem A/stand_personagemA.png" id="personagem-A" />
-                <h1 class="titulo">GreenWood</h1>
-            </div>
+        <section id="selecao-personagem" class="tela-selecao">
+            <h1>Escolha seu personagem</h1>
+            <div class="selecao-jogador">
+                <div class="cartao-personagem personagem-A" onclick="selecionarPersonagem(event)">
+                    <img src="../assets/animacoes/personagem A/stand_personagemA.png" id="personagem-A" />
+                    <h2 class="titulo">GreenWood</h2>
+                </div>
 
-            <div class="cartao-personagem  personagem-B" onclick="selecionarPersonagem(event)">
-                <img src="../assets/animacoes/personagem B/stand_personagemB.png" id="personagem-B" />
-                <h1 class="titulo">Esmerald</h1>
-            </div>
+                <div class="cartao-personagem personagem-B" onclick="selecionarPersonagem(event)">
+                    <img src="../assets/animacoes/personagem B/stand_personagemB.png" id="personagem-B" />
+                    <h2 class="titulo">Esmerald</h2>
+                </div>
 
-            <div class="cartao-personagem personagem-C" onclick="selecionarPersonagem(event)">
-                <img src="../assets/animacoes/personagem C/stand_personagemC.png" id="personagem-C" />
-                <h1 class="titulo">Blue Warrior</h1>
+                <div class="cartao-personagem personagem-C" onclick="selecionarPersonagem(event)">
+                    <img src="../assets/animacoes/personagem C/stand_personagemC.png" id="personagem-C" />
+                    <h2 class="titulo">Blue Warrior</h2>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <section id="selecao-time" class="tela-selecao" hidden>
+            <h1>Escolha seu time</h1>
+            <div class="selecao-times">
+                <button class="cartao-time time-aurora" type="button" data-turma="BARE" onclick="selecionarTime(event)">
+                    <span class="simbolo-time">A</span>
+                    <span>Aurora</span>
+                </button>
+                <button class="cartao-time time-floresta" type="button" data-turma="BARE" onclick="selecionarTime(event)">
+                    <span class="simbolo-time">F</span>
+                    <span>Floresta</span>
+                </button>
+                <button class="cartao-time time-cristal" type="button" data-turma="BARE" onclick="selecionarTime(event)">
+                    <span class="simbolo-time">C</span>
+                    <span>Cristal</span>
+                </button>
+            </div>
+            <button id="voltar-personagem" class="botao-voltar" type="button">Voltar</button>
+        </section>
     </main>
-    <footer>
-        <input placeholder="Selecione seu avatar..." />
-    </footer>
-    <script src="../scripts/inicio.js" charset="UTF-8"></script>
-    <audio id="selecao" src="/assets/audios/selecao.mp3" />
+    <script src="../scripts/inicio.js"></script>
+    <audio id="selecao" src="../assets/audios/selecao.mp3"></audio>
 </body>
 
 </html>
