@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>Enchantment Game</title>
     <link rel="stylesheet" type="text/css" href="../styles/cenarios.css" />
 </head>
@@ -9,13 +10,19 @@
 <body>
     <button class="tecla-som">O</button>
     <button class="tecla-e">E</button>
+    <div class="vidas-hud">
+        <p id="vidas-quiz"></p>
+    </div>
+    <div class="pontuacao-hud">
+        <p id="pontuacao-quiz"></p>
+    </div>
     <div class="personagem"></div>
     <div class="modal">
         <div class="modal-conteudo">
             <div class="quiz-status">
                 <p id="progresso-quiz"></p>
-                <p id="vidas-quiz"></p>
-                <p id="pontuacao-quiz"></p>
+                <p id="pontuacao-quiz-modal"></p>
+                <p id="tempo-quiz"></p>
             </div>
             <h1 id="enunciado-pergunta">Carregando pergunta...</h1>
             <div id="alternativas-quiz"></div>
@@ -25,7 +32,7 @@
         </div>
     </div>
     <footer></footer>
-    <script src="../scripts/cenario1.js"></script>
+    <script src="../scripts/cenario1.js" charset="UTF-8"></script>
     <audio loop id="tema">
         <source src="../assets/audios/tema.mp3" type="audio/mp3">
     </audio>
