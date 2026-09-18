@@ -2,16 +2,18 @@
 <html>
 
 <head>
+    <meta charset="UTF-8" />
     <title>Enchantment Game</title>
     <link rel="stylesheet" type="text/css" href="../styles/cenarios.css" />
 </head>
 
 <body>
-    <button class="tecla-som">O</button>
+    <button id="pontuacao-cenario" class="pontuacao-cenario" type="button">Pontuação: 0</button>
     <button class="tecla-e">E</button>
     <div class="personagem"></div>
     <div class="modal">
         <div class="modal-conteudo">
+            <button id="fechar-quiz" class="fechar-quiz" type="button" aria-label="Fechar quiz">X</button>
             <div class="quiz-status">
                 <p id="progresso-quiz"></p>
                 <p id="vidas-quiz"></p>

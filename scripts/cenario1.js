@@ -24,22 +24,14 @@ document.addEventListener('click', () => {
 })();
 
 
-document.querySelector('.tecla-som').addEventListener('click', () => {
-    const audio = document.getElementById('tema');
-    if (audio.stopped) {
-        audio.play();
-    } else {
-        audio.stop();
-    }
-})
-
-document.addEventListener('keyup', (evento) => {
-    if (evento.keyCode === 69 && bloquearAvanco) {
+document.addEventListener('keydown', (evento) => {
+    if (evento.keyCode === 69 && bloquearAvanco && !evento.repeat) {
         iniciarQuiz();
         return;
     }
 
     if (!TECLAS_USADAS.includes(evento.keyCode) || bloquearAvanco) return;
+    evento.preventDefault();
     const personagem = document.querySelector('.personagem');
     if (evento.keyCode === 39) {
         alterarDirecao('direita')
@@ -53,7 +45,9 @@ document.addEventListener('keyup', (evento) => {
         personagem.style.left = `${removerPixels(window.getComputedStyle(personagem).left) - 15}px`;
     }
 
-    executarSomCaminhada();
+    if (!evento.repeat) {
+        executarSomCaminhada();
+    }
 })
 
 function validarPosicao(novaPosicao) {
@@ -119,6 +113,14 @@ async function iniciarQuiz() {
             'Não foi possível carregar o quiz.';
         document.querySelector('#feedback-quiz').textContent = erro.message;
     }
+}
+
+function fecharQuiz() {
+    const modal = document.querySelector('.modal');
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    bloquearAvanco = false;
+    document.querySelector('.tecla-e').style.display = 'flex';
 }
 
 async function carregarPerguntas() {
@@ -202,14 +204,19 @@ function responderPergunta(alternativa) {
         return;
     }
 
-    document.querySelector('#proxima-pergunta').hidden = false;
-    estadoQuiz.respostaBloqueada = false;
+    setTimeout(() => {
+        estadoQuiz.perguntaAtual += 1;
+        estadoQuiz.respostaBloqueada = false;
+        exibirPergunta();
+    }, 900);
 }
 
 function atualizarStatus() {
     document.querySelector('#vidas-quiz').textContent =
         `Vidas: ${estadoQuiz.vidas}/${VIDAS_INICIAIS}`;
     document.querySelector('#pontuacao-quiz').textContent =
+        `Pontuação: ${estadoQuiz.pontuacao}`;
+    document.querySelector('#pontuacao-cenario').textContent =
         `Pontuação: ${estadoQuiz.pontuacao}`;
 }
 
@@ -245,3 +252,4 @@ document.querySelector('#proxima-pergunta').addEventListener('click', () => {
 });
 
 document.querySelector('#reiniciar-quiz').addEventListener('click', iniciarQuiz);
+document.querySelector('#fechar-quiz').addEventListener('click', fecharQuiz);

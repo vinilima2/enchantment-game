@@ -35,22 +35,23 @@ body {
     display: none;
 }
 
-.tecla-som {
+.pontuacao-cenario {
     height: 50px;
-    width: 50px;
+    width: auto;
     align-items: center;
     justify-content: center;
     text-align: center;
-    animation: pulsar 2s infinite;
-    font-size: 35px;
+    font-size: 18px;
     font-weight: bold;
     position: absolute;
     top: 10px;
     left: 10px;
+    padding: 0 14px;
     background-color: rgba(224, 188, 188, 0.918);
     border: none;
     border-radius: 15px;
     color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 
@@ -69,12 +70,33 @@ body {
 }
 
 .modal-conteudo {
+    position: relative;
     width: 70vw;
     max-height: 80vh;
     overflow-y: auto;
     background-color: rgb(208, 213, 218);
     z-index: 20;
     padding: 20px;
+}
+
+.fechar-quiz {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background-color: #8a4f4f;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.fechar-quiz:hover {
+    background-color: #6f3d3d;
 }
 
 .modal-conteudo p,
@@ -87,11 +109,13 @@ body {
     display: flex;
     justify-content: space-between;
     gap: 16px;
+    padding-right: 50px;
     font-weight: bold;
 }
 
 #enunciado-pergunta {
     font-size: 24px;
+    padding-right: 40px;
 }
 
 #alternativas-quiz {

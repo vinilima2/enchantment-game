@@ -10,14 +10,20 @@
 
 function tocarSelecao() {
     const audio = document.getElementById('selecao');
-    audio.play();
+    audio.play().catch(() => {});
 }
 
 
 function selecionarPersonagem(evento) {
-    sessionStorage.setItem('personagem', evento.target.id)
-    sessionStorage.setItem('turma', 'BARE')
-    navigation.navigate('cenario1.html')
+    const personagem = evento.currentTarget.querySelector('img').id;
+    sessionStorage.setItem('personagem', personagem);
+    document.querySelector('#selecao-personagem').hidden = true;
+    document.querySelector('#selecao-time').hidden = false;
+}
+
+function selecionarTime(evento) {
+    sessionStorage.setItem('turma', evento.currentTarget.dataset.turma);
+    window.location.href = 'cenario1.html';
 }
 
 function exibirTeclaE() {
@@ -27,3 +33,8 @@ function exibirTeclaE() {
 function abrirModal() {
 
 }
+
+document.querySelector('#voltar-personagem').addEventListener('click', () => {
+    document.querySelector('#selecao-time').hidden = true;
+    document.querySelector('#selecao-personagem').hidden = false;
+});
