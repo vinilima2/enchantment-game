@@ -1,16 +1,22 @@
 const TECLAS_USADAS = [37, 39, 69];
 const VIDAS_INICIAIS = 5;
 const TOTAL_PERGUNTAS = 4;
+const TEMPO_POR_PERGUNTA = 90;
 const estadoQuiz = {
     perguntas: [],
     perguntaAtual: 0,
     vidas: VIDAS_INICIAIS,
     pontuacao: 0,
+    tempoRestante: TEMPO_POR_PERGUNTA,
     respostaBloqueada: false,
     finalizado: false
 };
 
 var bloquearAvanco = false;
+var intervaloTempo = null;
+
+atualizarStatus();
+document.querySelector('#tempo-quiz').textContent = 'Tempo: --';
 
 document.addEventListener('click', () => {
     const audio = document.getElementById('tema');
@@ -103,6 +109,7 @@ async function iniciarQuiz() {
     const modal = document.querySelector('.modal');
     modal.style.opacity = '1';
     modal.style.visibility = 'visible';
+    document.querySelector('.pontuacao-hud').classList.add('visivel');
     atualizarStatus();
 
     try {
@@ -166,11 +173,69 @@ function exibirPergunta() {
         botao.addEventListener('click', () => responderPergunta(alternativa));
         alternativas.appendChild(botao);
     });
+
+    iniciarTemporizador();
+}
+
+function iniciarTemporizador() {
+    pararTemporizador();
+    estadoQuiz.tempoRestante = TEMPO_POR_PERGUNTA;
+    atualizarTempo();
+
+    intervaloTempo = setInterval(() => {
+        estadoQuiz.tempoRestante -= 1;
+        atualizarTempo();
+
+        if (estadoQuiz.tempoRestante <= 0) {
+            pararTemporizador();
+            tempoEsgotado();
+        }
+    }, 1000);
+}
+
+function pararTemporizador() {
+    if (intervaloTempo) {
+        clearInterval(intervaloTempo);
+        intervaloTempo = null;
+    }
+}
+
+function atualizarTempo() {
+    const minutos = Math.floor(estadoQuiz.tempoRestante / 60);
+    const segundos = String(estadoQuiz.tempoRestante % 60).padStart(2, '0');
+    document.querySelector('#tempo-quiz').textContent = `Tempo: ${minutos}:${segundos}`;
+}
+
+function tempoEsgotado() {
+    if (estadoQuiz.respostaBloqueada || estadoQuiz.finalizado) return;
+
+    estadoQuiz.respostaBloqueada = true;
+    const feedback = document.querySelector('#feedback-quiz');
+    const botoes = document.querySelectorAll('.alternativa-quiz');
+    botoes.forEach((botao) => { botao.disabled = true; });
+
+    estadoQuiz.vidas -= 1;
+    feedback.textContent = 'Tempo esgotado! Você perdeu uma vida.';
+    atualizarStatus();
+    executarAnimacaoMorte();
+
+    if (estadoQuiz.vidas === 0) {
+        finalizarQuiz(false);
+        return;
+    }
+
+    setTimeout(() => {
+        restaurarPersonagem();
+        estadoQuiz.respostaBloqueada = false;
+        botoes.forEach((botao) => { botao.disabled = false; });
+        iniciarTemporizador();
+    }, 900);
 }
 
 function responderPergunta(alternativa) {
     if (estadoQuiz.respostaBloqueada || estadoQuiz.finalizado) return;
 
+    pararTemporizador();
     estadoQuiz.respostaBloqueada = true;
     const feedback = document.querySelector('#feedback-quiz');
     const botoes = document.querySelectorAll('.alternativa-quiz');
@@ -191,6 +256,7 @@ function responderPergunta(alternativa) {
             restaurarPersonagem();
             estadoQuiz.respostaBloqueada = false;
             botoes.forEach((botao) => { botao.disabled = false; });
+            iniciarTemporizador();
         }, 900);
         return;
     }
@@ -214,6 +280,8 @@ function responderPergunta(alternativa) {
 function atualizarStatus() {
     document.querySelector('#vidas-quiz').textContent =
         `Vidas: ${estadoQuiz.vidas}/${VIDAS_INICIAIS}`;
+    const textoPontuacao = `Pontuação: ${estadoQuiz.pontuacao}`;
+    document.querySelector('#pontuacao-quiz-modal').textContent = textoPontuacao;
     document.querySelector('#pontuacao-quiz').textContent =
         `Pontuação: ${estadoQuiz.pontuacao}`;
     document.querySelector('#pontuacao-cenario').textContent =
@@ -233,6 +301,7 @@ function restaurarPersonagem() {
 }
 
 function finalizarQuiz(vitoria) {
+    pararTemporizador();
     estadoQuiz.finalizado = true;
     estadoQuiz.respostaBloqueada = true;
     document.querySelector('#alternativas-quiz').innerHTML = '';
