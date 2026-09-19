@@ -18,7 +18,7 @@ var intervaloTempo = null;
 atualizarStatus();
 document.querySelector('#tempo-quiz').textContent = 'Tempo: --';
 
-document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_quebrada.jpeg')";
+document.body.style.backgroundImage = "url('../assets/cenarios/cenario_continuidade.jpeg')";
 
 document.addEventListener('click', () => {
     const audio = document.getElementById('tema');
@@ -60,7 +60,6 @@ function validarPosicao(novaPosicao) {
     }
 }
 
-
 function buscarLetraPersonagemSelecionado() {
     const personagem = sessionStorage.getItem('personagem');
     return personagem.split('-')[1]
@@ -72,7 +71,6 @@ function executarSomCaminhada() {
     audio.play();
 }
 
-
 function alterarDirecao(direcao = 'esquerda') {
     const letra = buscarLetraPersonagemSelecionado();
     const divPersonagem = document.querySelector('.personagem');
@@ -83,12 +81,10 @@ function alterarDirecao(direcao = 'esquerda') {
             } else {
                 divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagemA_mov_${direcao}.png')`
             }
-        }, 100)
+        }, 150)
     }
     divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_mov_${direcao}.png')`
 }
-
-
 
 function removerPixels(valorComPixels) {
     return Number(valorComPixels.replace('px', ''))
@@ -100,7 +96,6 @@ async function iniciarQuiz() {
     estadoQuiz.pontuacao = 0;
     estadoQuiz.respostaBloqueada = false;
     estadoQuiz.finalizado = false;
-
 
     const modal = document.querySelector('.modal');
     modal.style.opacity = '1';
@@ -323,11 +318,13 @@ function finalizarQuiz(vitoria) {
         return;
     }
 
-    sessionStorage.setItem('pontuacao-cenario1', estadoQuiz.pontuacao);
+    const pontuacaoCenario1 = Number(sessionStorage.getItem('pontuacao-cenario1')) || 0;
+    const pontuacaoTotal = pontuacaoCenario1 + estadoQuiz.pontuacao;
+    sessionStorage.setItem('pontuacao-total', pontuacaoTotal);
 
     document.querySelector('#reiniciar-quiz').hidden = true;
     document.querySelector('#fechar-quiz').style.display = 'none';
-    document.querySelector('#enunciado-pergunta').textContent = 'Ponte consertada!';
+    document.querySelector('#enunciado-pergunta').textContent = 'Fase concluída!';
     document.querySelector('#feedback-quiz').textContent =
         `Pontuação: ${estadoQuiz.pontuacao}`;
 
@@ -335,8 +332,6 @@ function finalizarQuiz(vitoria) {
         const modal = document.querySelector('.modal');
         modal.style.opacity = '0';
         modal.style.visibility = 'hidden';
-
-        document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_consertada.jpeg')";
 
         bloquearAvanco = false;
 
@@ -351,7 +346,7 @@ function finalizarQuiz(vitoria) {
 
             if (posicaoAtual >= window.innerWidth) {
                 clearInterval(intervaloSaida);
-                window.location.href = 'cenario2.html';
+                window.location.href = 'cenario3.html';
             }
         }, 100);
     }, 1800);

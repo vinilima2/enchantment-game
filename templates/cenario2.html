@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Enchantment Game</title>
+    <link rel="stylesheet" type="text/css" href="../styles/cenarios.css" />
+</head>
+
+<body>
+    <button id="pontuacao-cenario" class="pontuacao-cenario" type="button">Pontuação: 0</button>
+    <button class="tecla-e">E</button>
+    <div class="vidas-hud">
+        <p id="vidas-quiz"></p>
+    </div>
+    <div class="pontuacao-hud">
+        <p id="pontuacao-quiz"></p>
+    </div>
+    <div class="personagem"></div>
+    <div class="modal">
+        <div class="modal-conteudo">
+            <button id="fechar-quiz" class="fechar-quiz" type="button" aria-label="Fechar quiz">X</button>
+            <div class="quiz-status">
+                <p id="progresso-quiz"></p>
+                <p id="pontuacao-quiz-modal"></p>
+                <p id="tempo-quiz"></p>
+            </div>
+            <h1 id="enunciado-pergunta">Carregando pergunta...</h1>
+            <div id="alternativas-quiz"></div>
+            <p id="feedback-quiz" role="status"></p>
+            <button id="proxima-pergunta" class="botao-quiz" hidden>Próxima pergunta</button>
+            <button id="reiniciar-quiz" class="botao-quiz" hidden>Jogar novamente</button>
+        </div>
+    </div>
+    <div class="game-over-overlay" id="game-over" hidden>
+        <div class="game-over-conteudo">
+            <h1>Game Over!</h1>
+            <p id="pontuacao-game-over"></p>
+            <button id="reiniciar-jogo" type="button">Jogar novamente</button>
+        </div>
+    </div>
+    <footer></footer>
+    <script src="../scripts/cenario2.js" charset="UTF-8"></script>
+    <audio loop id="tema">
+        <source src="../assets/audios/tema.mp3" type="audio/mp3">
+    </audio>
+</body>
+
+</html>
