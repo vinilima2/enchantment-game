@@ -20,10 +20,13 @@ document.querySelector('#tempo-quiz').textContent = 'Tempo: --';
 
 document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_quebrada.jpeg')";
 
-document.addEventListener('click', () => {
-    const audio = document.getElementById('tema');
-    audio.play();
-}, { once: true });
+function executarSomTema() {
+    const audio = new Audio('../assets/audios/tema.mp3');
+    audio.loop = true;
+    audio.play().catch(() => { });
+}
+
+executarSomTema();
 
 (() => {
     const letra = buscarLetraPersonagemSelecionado();
@@ -54,7 +57,7 @@ document.addEventListener('keydown', (evento) => {
 })
 
 function validarPosicao(novaPosicao) {
-    if (novaPosicao >= 445) {
+    if (novaPosicao >= 350) {
         bloquearAvanco = true;
         iniciarQuiz();
     }
@@ -241,10 +244,15 @@ function tempoEsgotado() {
 
     setTimeout(() => {
         restaurarPersonagem();
+        feedback.className = '';
+        feedback.textContent = '';
         estadoQuiz.respostaBloqueada = false;
-        botoes.forEach((botao) => { botao.disabled = false; });
+        botoes.forEach((botao) => {
+            botao.classList.remove('resposta-incorreta', 'resposta-correta');
+            botao.disabled = false;
+        });
         iniciarTemporizador();
-    }, 900);
+    }, 1200);
 }
 
 function responderPergunta(alternativa, botaoSelecionado) {
@@ -272,10 +280,15 @@ function responderPergunta(alternativa, botaoSelecionado) {
 
         setTimeout(() => {
             restaurarPersonagem();
+            feedback.className = '';
+            feedback.textContent = '';
             estadoQuiz.respostaBloqueada = false;
-            botoes.forEach((botao) => { botao.disabled = false; });
+            botoes.forEach((botao) => {
+                botao.classList.remove('resposta-incorreta', 'resposta-correta');
+                botao.disabled = false;
+            });
             iniciarTemporizador();
-        }, 900);
+        }, 1200);
         return;
     }
 
@@ -287,7 +300,9 @@ function responderPergunta(alternativa, botaoSelecionado) {
     executarSomSucesso();
 
     if (estadoQuiz.perguntaAtual === TOTAL_PERGUNTAS - 1) {
-        finalizarQuiz(true);
+        setTimeout(() => {
+            finalizarQuiz(true);
+        }, 1000);
         return;
     }
 
@@ -312,7 +327,7 @@ function atualizarStatus() {
 function executarAnimacaoDerrota() {
     const letra = buscarLetraPersonagemSelecionado();
     const personagem = document.querySelector('.personagem');
-    personagem.style.left = `${removerPixels(personagem.style.left) + 70}px`
+    personagem.style.left = `${removerPixels(personagem.style.left) + 45}px`
     personagem.style.background =
         `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_caindo.png')`;
 }
@@ -327,8 +342,6 @@ function finalizarQuiz(vitoria) {
     pararTemporizador();
     estadoQuiz.finalizado = true;
     estadoQuiz.respostaBloqueada = true;
-    document.querySelector('#alternativas-quiz').innerHTML = '';
-    document.querySelector('#proxima-pergunta').hidden = true;
 
     if (!vitoria) {
         const modal = document.querySelector('.modal');
@@ -355,38 +368,30 @@ function finalizarQuiz(vitoria) {
     sessionStorage.setItem('pontuacao-cenario1', estadoQuiz.pontuacao);
     sessionStorage.setItem('vidas-cenario1', estadoQuiz.vidas);
 
-    document.querySelector('#reiniciar-quiz').hidden = true;
-    document.querySelector('#fechar-quiz').style.display = 'none';
-    document.querySelector('#enunciado-pergunta').textContent = 'Ponte consertada!';
-    document.querySelector('#feedback-quiz').textContent =
-        `Pontuação: ${estadoQuiz.pontuacao}`;
+    const modal = document.querySelector('.modal');
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
 
-    setTimeout(() => {
-        const modal = document.querySelector('.modal');
-        modal.style.opacity = '0';
-        modal.style.visibility = 'hidden';
+    document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_consertada.jpeg')";
 
-        document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_consertada.jpeg')";
+    bloquearAvanco = false;
 
-        bloquearAvanco = false;
+    const personagem = document.querySelector('.personagem');
+    restaurarPersonagem();
+    let posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
+    personagem.style.left = `${posicaoAtual + 450}px`;
 
-        const personagem = document.querySelector('.personagem');
-        restaurarPersonagem();
-
-        let posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
-        personagem.style.left = `${posicaoAtual + 850}px`;
-
-        const intervaloSaida = setInterval(() => {
-            executarSomCaminhada();
-            const posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
-            alterarDirecao('direita');
-            personagem.style.left = `${posicaoAtual + 15}px`;
-            if ((posicaoAtual + 15) >= 1600) {
-                clearInterval(intervaloSaida);
-                window.location.href = 'cenario2.html';
-            }
-        }, 200);
-    }, 1800);
+    const intervaloSaida = setInterval(() => {
+        executarSomCaminhada();
+        const posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
+        alterarDirecao('direita');
+        const novaPos = posicaoAtual + 25;
+        personagem.style.left = `${novaPos}px`;
+        if (novaPos >= 900) {
+            clearInterval(intervaloSaida);
+            window.location.replace('cenario2.html');
+        }
+    }, 200);
 }
 
 document.querySelector('#proxima-pergunta').addEventListener('click', () => {

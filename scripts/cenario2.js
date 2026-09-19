@@ -12,6 +12,9 @@ const estadoQuiz = {
     finalizado: false
 };
 
+const personagem = document.querySelector('.personagem');
+personagem.style.bottom = '235px';
+
 var bloquearAvanco = false;
 var intervaloTempo = null;
 
@@ -20,10 +23,13 @@ document.querySelector('#tempo-quiz').textContent = 'Tempo: --';
 
 document.body.style.backgroundImage = "url('../assets/cenarios/cenario_continuidade.jpeg')";
 
-document.addEventListener('click', () => {
-    const audio = document.getElementById('tema');
-    audio.play();
-}, { once: true });
+function executarSomTema() {
+    const audio = new Audio('../assets/audios/tema.mp3');
+    audio.loop = true;
+    audio.play().catch(() => {});
+}
+
+executarSomTema();
 
 (() => {
     const letra = buscarLetraPersonagemSelecionado();
@@ -54,7 +60,7 @@ document.addEventListener('keydown', (evento) => {
 })
 
 function validarPosicao(novaPosicao) {
-    if (novaPosicao >= 1455) {
+    if (novaPosicao >= 950) {
         bloquearAvanco = true;
         iniciarQuiz();
     }
@@ -218,10 +224,15 @@ function tempoEsgotado() {
 
     setTimeout(() => {
         restaurarPersonagem();
+        feedback.className = '';
+        feedback.textContent = '';
         estadoQuiz.respostaBloqueada = false;
-        botoes.forEach((botao) => { botao.disabled = false; });
+        botoes.forEach((botao) => {
+            botao.classList.remove('resposta-incorreta', 'resposta-correta');
+            botao.disabled = false;
+        });
         iniciarTemporizador();
-    }, 900);
+    }, 1200);
 }
 
 function responderPergunta(alternativa, botaoSelecionado) {
@@ -240,7 +251,7 @@ function responderPergunta(alternativa, botaoSelecionado) {
         feedback.textContent = `${alternativa.complemento} Você perdeu uma vida.`;
         atualizarStatus();
         executarAnimacaoDerrota();
-        executarSomErro()
+        executarSomErro();
 
         if (estadoQuiz.vidas === 0) {
             finalizarQuiz(false);
@@ -249,10 +260,15 @@ function responderPergunta(alternativa, botaoSelecionado) {
 
         setTimeout(() => {
             restaurarPersonagem();
+            feedback.className = '';
+            feedback.textContent = '';
             estadoQuiz.respostaBloqueada = false;
-            botoes.forEach((botao) => { botao.disabled = false; });
+            botoes.forEach((botao) => {
+                botao.classList.remove('resposta-incorreta', 'resposta-correta');
+                botao.disabled = false;
+            });
             iniciarTemporizador();
-        }, 900);
+        }, 1200);
         return;
     }
 
@@ -264,7 +280,9 @@ function responderPergunta(alternativa, botaoSelecionado) {
     executarSomSucesso()
 
     if (estadoQuiz.perguntaAtual === TOTAL_PERGUNTAS - 1) {
-        finalizarQuiz(true);
+        setTimeout(() => {
+            finalizarQuiz(true);
+        }, 1000);
         return;
     }
 
@@ -302,8 +320,6 @@ function finalizarQuiz(vitoria) {
     pararTemporizador();
     estadoQuiz.finalizado = true;
     estadoQuiz.respostaBloqueada = true;
-    document.querySelector('#alternativas-quiz').innerHTML = '';
-    document.querySelector('#proxima-pergunta').hidden = true;
 
     if (!vitoria) {
         const modal = document.querySelector('.modal');
@@ -316,7 +332,7 @@ function finalizarQuiz(vitoria) {
         setTimeout(() => {
             personagem.style.transition = 'bottom 0.8s ease-in';
             personagem.style.bottom = '-200px';
-            executarSomQueda()
+            executarSomQueda();
             
             setTimeout(() => {
                 document.querySelector('#pontuacao-game-over').textContent =
@@ -329,34 +345,27 @@ function finalizarQuiz(vitoria) {
 
     sessionStorage.setItem('pontuacao-total', estadoQuiz.pontuacao);
 
-    document.querySelector('#reiniciar-quiz').hidden = true;
-    document.querySelector('#fechar-quiz').style.display = 'none';
-    document.querySelector('#enunciado-pergunta').textContent = 'Fase concluída!';
-    document.querySelector('#feedback-quiz').textContent =
-        `Pontuação: ${estadoQuiz.pontuacao}`;
+    const modal = document.querySelector('.modal');
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
 
-    setTimeout(() => {
-        const modal = document.querySelector('.modal');
-        modal.style.opacity = '0';
-        modal.style.visibility = 'hidden';
+    bloquearAvanco = false;
 
-        bloquearAvanco = false;
+    const personagem = document.querySelector('.personagem');
+    restaurarPersonagem();
 
-        const personagem = document.querySelector('.personagem');
-        restaurarPersonagem();
+    const intervaloSaida = setInterval(() => {
+        executarSomCaminhada();
+        const posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
+        alterarDirecao('direita');
+        const novaPos = posicaoAtual + 25;
+        personagem.style.left = `${novaPos}px`;
 
-        const intervaloSaida = setInterval(() => {
-            executarSomCaminhada();
-            const posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
-            alterarDirecao('direita');
-            personagem.style.left = `${posicaoAtual + 15}px`;
-
-            if ((posicaoAtual + 15) >= 1600) {
-                clearInterval(intervaloSaida);
-                window.location.href = 'cenario3.html';
-            }
-        }, 200);
-    }, 1800);
+        if (novaPos >= (850)) {
+            clearInterval(intervaloSaida);
+            window.location.replace('cenario3.html');
+        }
+    }, 200);
 }
 
 document.querySelector('#proxima-pergunta').addEventListener('click', () => {
