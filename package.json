@@ -1,0 +1,26 @@
+{
+  "name": "enchantment-game",
+  "version": "1.0.0",
+  "description": "Jogo do Encantamento",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "build": {
+    "appId": "enchantment.game",
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vinilima2/enchantment-game/issues"
+  },
+  "homepage": "https://github.com/vinilima2/enchantment-game#readme",
+  "devDependencies": {
+    "electron": "^44.4.3",
+    "electron-builder": "^26.15.3"
+  }
+}
