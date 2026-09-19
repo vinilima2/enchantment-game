@@ -157,6 +157,7 @@ function exibirPergunta() {
         `Pergunta ${estadoQuiz.perguntaAtual + 1} de ${TOTAL_PERGUNTAS}`;
     document.querySelector('#enunciado-pergunta').textContent = pergunta.enunciado;
     alternativas.innerHTML = '';
+    feedback.className = '';
     feedback.textContent = '';
     document.querySelector('#proxima-pergunta').hidden = true;
     document.querySelector('#reiniciar-quiz').hidden = true;
@@ -165,7 +166,7 @@ function exibirPergunta() {
         const botao = document.createElement('button');
         botao.className = 'alternativa-quiz';
         botao.textContent = alternativa.conteudo;
-        botao.addEventListener('click', () => responderPergunta(alternativa));
+        botao.addEventListener('click', () => responderPergunta(alternativa, botao));
         alternativas.appendChild(botao);
     });
 
@@ -210,6 +211,7 @@ function tempoEsgotado() {
     botoes.forEach((botao) => { botao.disabled = true; });
 
     estadoQuiz.vidas -= 1;
+    feedback.className = 'feedback-tempo';
     feedback.textContent = 'Tempo esgotado! Você perdeu uma vida.';
     atualizarStatus();
     executarAnimacaoDerrota();
@@ -227,7 +229,7 @@ function tempoEsgotado() {
     }, 900);
 }
 
-function responderPergunta(alternativa) {
+function responderPergunta(alternativa, botaoSelecionado) {
     if (estadoQuiz.respostaBloqueada || estadoQuiz.finalizado) return;
 
     pararTemporizador();
@@ -238,6 +240,8 @@ function responderPergunta(alternativa) {
 
     if (alternativa.assertividade === 'incorreto') {
         estadoQuiz.vidas -= 1;
+        botaoSelecionado.classList.add('resposta-incorreta');
+        feedback.className = 'feedback-incorreto';
         feedback.textContent = `${alternativa.complemento} Você perdeu uma vida.`;
         atualizarStatus();
         executarAnimacaoDerrota();
@@ -257,6 +261,8 @@ function responderPergunta(alternativa) {
     }
 
     estadoQuiz.pontuacao += Number(alternativa.pontos) || 0;
+    botaoSelecionado.classList.add('resposta-correta');
+    feedback.className = 'feedback-correto';
     feedback.textContent = alternativa.complemento;
     atualizarStatus();
 
