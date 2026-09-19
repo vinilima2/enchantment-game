@@ -18,6 +18,8 @@ var intervaloTempo = null;
 atualizarStatus();
 document.querySelector('#tempo-quiz').textContent = 'Tempo: --';
 
+document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_quebrada.jpeg')";
+
 document.addEventListener('click', () => {
     const audio = document.getElementById('tema');
     audio.play();
@@ -31,11 +33,6 @@ document.addEventListener('click', () => {
 
 
 document.addEventListener('keydown', (evento) => {
-    if (evento.keyCode === 69 && bloquearAvanco && !evento.repeat) {
-        iniciarQuiz();
-        return;
-    }
-
     if (!TECLAS_USADAS.includes(evento.keyCode) || bloquearAvanco) return;
     evento.preventDefault();
     const personagem = document.querySelector('.personagem');
@@ -59,8 +56,7 @@ document.addEventListener('keydown', (evento) => {
 function validarPosicao(novaPosicao) {
     if (novaPosicao >= 445) {
         bloquearAvanco = true;
-        const teclaE = document.querySelector('.tecla-e');
-        teclaE.style.display = 'flex';
+        iniciarQuiz();
     }
 }
 
@@ -105,7 +101,7 @@ async function iniciarQuiz() {
     estadoQuiz.respostaBloqueada = false;
     estadoQuiz.finalizado = false;
 
-    document.querySelector('.tecla-e').style.display = 'none';
+
     const modal = document.querySelector('.modal');
     modal.style.opacity = '1';
     modal.style.visibility = 'visible';
@@ -127,7 +123,6 @@ function fecharQuiz() {
     modal.style.opacity = '0';
     modal.style.visibility = 'hidden';
     bloquearAvanco = false;
-    document.querySelector('.tecla-e').style.display = 'flex';
 }
 
 async function carregarPerguntas() {
@@ -306,12 +301,60 @@ function finalizarQuiz(vitoria) {
     estadoQuiz.respostaBloqueada = true;
     document.querySelector('#alternativas-quiz').innerHTML = '';
     document.querySelector('#proxima-pergunta').hidden = true;
-    document.querySelector('#reiniciar-quiz').hidden = false;
-    document.querySelector('#enunciado-pergunta').textContent = vitoria
-        ? 'Ponte consertada!'
-        : 'Game over!';
+
+    if (!vitoria) {
+        const modal = document.querySelector('.modal');
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
+
+        const personagem = document.querySelector('.personagem');
+        executarAnimacaoMorte();
+
+        setTimeout(() => {
+            personagem.style.transition = 'bottom 0.8s ease-in';
+            personagem.style.bottom = '-200px';
+
+            setTimeout(() => {
+                document.querySelector('#pontuacao-game-over').textContent =
+                    `Pontuação: ${estadoQuiz.pontuacao}`;
+                document.getElementById('game-over').hidden = false;
+            }, 900);
+        }, 400);
+        return;
+    }
+
+    sessionStorage.setItem('pontuacao-cenario1', estadoQuiz.pontuacao);
+
+    document.querySelector('#reiniciar-quiz').hidden = true;
+    document.querySelector('#fechar-quiz').style.display = 'none';
+    document.querySelector('#enunciado-pergunta').textContent = 'Ponte consertada!';
     document.querySelector('#feedback-quiz').textContent =
-        `Pontuação final: ${estadoQuiz.pontuacao}`;
+        `Pontuação: ${estadoQuiz.pontuacao}`;
+
+    setTimeout(() => {
+        const modal = document.querySelector('.modal');
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
+
+        document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_consertada.jpeg')";
+
+        bloquearAvanco = false;
+
+        const personagem = document.querySelector('.personagem');
+        restaurarPersonagem();
+
+        const intervaloSaida = setInterval(() => {
+            executarSomCaminhada();
+            const posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
+            alterarDirecao('direita');
+            personagem.style.left = `${posicaoAtual + 15}px`;
+
+            if (posicaoAtual >= window.innerWidth) {
+                clearInterval(intervaloSaida);
+                window.location.href = 'cenario2.html';
+            }
+        }, 100);
+    }, 1800);
 }
 
 document.querySelector('#proxima-pergunta').addEventListener('click', () => {
@@ -322,3 +365,13 @@ document.querySelector('#proxima-pergunta').addEventListener('click', () => {
 
 document.querySelector('#reiniciar-quiz').addEventListener('click', iniciarQuiz);
 document.querySelector('#fechar-quiz').addEventListener('click', fecharQuiz);
+
+document.getElementById('reiniciar-jogo').addEventListener('click', () => {
+    const personagem = document.querySelector('.personagem');
+    document.getElementById('game-over').hidden = true;
+    personagem.style.transition = '';
+    personagem.style.bottom = '';
+    personagem.style.left = '5px';
+    restaurarPersonagem();
+    bloquearAvanco = false;
+});

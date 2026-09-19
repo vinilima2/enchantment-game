@@ -3,16 +3,17 @@ body {
     padding: 0;
     height: 100vh;
     width: 100vw;
-    background: url('../assets/cenarios/cenario_ponte_consertada.png');
+    background: no-repeat center center;
+    background-size: cover;
     position: relative;
 }
 
 .personagem {
-    height: 105px;
+    height: 120px;
     width: 120px;
     position: absolute;
     left: 5px;
-    bottom: 152px;
+    bottom: 305px;
 }
 
 
@@ -214,6 +215,75 @@ body {
     }
 
     100% {
+        transform: scale(1);
+    }
+}
+
+.game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.game-over-overlay[hidden] {
+    display: none;
+}
+
+.game-over-conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background-color: rgb(208, 213, 218);
+    padding: 48px 56px;
+    border-radius: 20px;
+    text-align: center;
+    animation: aparecer 0.5s ease-out;
+}
+
+.game-over-conteudo h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 42px;
+    color: #6f3d3d;
+}
+
+.game-over-conteudo p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: #3a2f2f;
+}
+
+.game-over-conteudo button {
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #317342;
+    color: white;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.game-over-conteudo button:hover {
+    background-color: #245530;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
         transform: scale(1);
     }
 }
