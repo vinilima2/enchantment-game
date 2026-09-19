@@ -5,8 +5,8 @@ const TEMPO_POR_PERGUNTA = 90;
 const estadoQuiz = {
     perguntas: [],
     perguntaAtual: 0,
-    vidas: VIDAS_INICIAIS,
-    pontuacao: 0,
+    vidas: Number(sessionStorage.getItem('vidas-cenario1')),
+    pontuacao: Number(sessionStorage.getItem('pontuacao-cenario1')),
     tempoRestante: TEMPO_POR_PERGUNTA,
     respostaBloqueada: false,
     finalizado: false
@@ -54,7 +54,7 @@ document.addEventListener('keydown', (evento) => {
 })
 
 function validarPosicao(novaPosicao) {
-    if (novaPosicao >= 445) {
+    if (novaPosicao >= 1455) {
         bloquearAvanco = true;
         iniciarQuiz();
     }
@@ -81,7 +81,7 @@ function alterarDirecao(direcao = 'esquerda') {
             } else {
                 divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagemA_mov_${direcao}.png')`
             }
-        }, 150)
+        }, 100)
     }
     divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_mov_${direcao}.png')`
 }
@@ -92,8 +92,8 @@ function removerPixels(valorComPixels) {
 
 async function iniciarQuiz() {
     estadoQuiz.perguntaAtual = 0;
-    estadoQuiz.vidas = VIDAS_INICIAIS;
-    estadoQuiz.pontuacao = 0;
+    estadoQuiz.vidas = Number(sessionStorage.getItem('vidas-cenario1'));
+    estadoQuiz.pontuacao = Number(sessionStorage.getItem('pontuacao-cenario1'));
     estadoQuiz.respostaBloqueada = false;
     estadoQuiz.finalizado = false;
 
@@ -240,6 +240,7 @@ function responderPergunta(alternativa, botaoSelecionado) {
         feedback.textContent = `${alternativa.complemento} Você perdeu uma vida.`;
         atualizarStatus();
         executarAnimacaoDerrota();
+        executarSomErro()
 
         if (estadoQuiz.vidas === 0) {
             finalizarQuiz(false);
@@ -260,6 +261,7 @@ function responderPergunta(alternativa, botaoSelecionado) {
     feedback.className = 'feedback-correto';
     feedback.textContent = alternativa.complemento;
     atualizarStatus();
+    executarSomSucesso()
 
     if (estadoQuiz.perguntaAtual === TOTAL_PERGUNTAS - 1) {
         finalizarQuiz(true);
@@ -314,7 +316,8 @@ function finalizarQuiz(vitoria) {
         setTimeout(() => {
             personagem.style.transition = 'bottom 0.8s ease-in';
             personagem.style.bottom = '-200px';
-
+            executarSomQueda()
+            
             setTimeout(() => {
                 document.querySelector('#pontuacao-game-over').textContent =
                     `Pontuação: ${estadoQuiz.pontuacao}`;
@@ -324,9 +327,7 @@ function finalizarQuiz(vitoria) {
         return;
     }
 
-    const pontuacaoCenario1 = Number(sessionStorage.getItem('pontuacao-cenario1')) || 0;
-    const pontuacaoTotal = pontuacaoCenario1 + estadoQuiz.pontuacao;
-    sessionStorage.setItem('pontuacao-total', pontuacaoTotal);
+    sessionStorage.setItem('pontuacao-total', estadoQuiz.pontuacao);
 
     document.querySelector('#reiniciar-quiz').hidden = true;
     document.querySelector('#fechar-quiz').style.display = 'none';
@@ -350,11 +351,11 @@ function finalizarQuiz(vitoria) {
             alterarDirecao('direita');
             personagem.style.left = `${posicaoAtual + 15}px`;
 
-            if (posicaoAtual >= window.innerWidth) {
+            if ((posicaoAtual + 15) >= 1600) {
                 clearInterval(intervaloSaida);
                 window.location.href = 'cenario3.html';
             }
-        }, 100);
+        }, 200);
     }, 1800);
 }
 
@@ -376,3 +377,23 @@ document.getElementById('reiniciar-jogo').addEventListener('click', () => {
     restaurarPersonagem();
     bloquearAvanco = false;
 });
+
+
+
+function executarSomSucesso() {
+    const audio = new Audio('../assets/audios/sucesso.mp3');
+    audio.playbackRate = 2.0;
+    audio.play();
+}
+
+function executarSomErro() {
+    const audio = new Audio('../assets/audios/erro.mp3');
+    audio.playbackRate = 2.0;
+    audio.play();
+}
+
+function executarSomQueda() {
+    const audio = new Audio('../assets/audios/queda.mp3');
+    audio.playbackRate = 2.0;
+    audio.play();
+}

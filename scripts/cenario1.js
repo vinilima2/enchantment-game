@@ -72,6 +72,24 @@ function executarSomCaminhada() {
     audio.play();
 }
 
+function executarSomSucesso() {
+    const audio = new Audio('../assets/audios/sucesso.mp3');
+    audio.playbackRate = 2.0;
+    audio.play();
+}
+
+function executarSomErro() {
+    const audio = new Audio('../assets/audios/erro.mp3');
+    audio.playbackRate = 2.0;
+    audio.play();
+}
+
+function executarSomQueda() {
+    const audio = new Audio('../assets/audios/queda.mp3');
+    audio.playbackRate = 2.0;
+    audio.play();
+}
+
 
 function alterarDirecao(direcao = 'esquerda') {
     const letra = buscarLetraPersonagemSelecionado();
@@ -245,6 +263,7 @@ function responderPergunta(alternativa, botaoSelecionado) {
         feedback.textContent = `${alternativa.complemento} Você perdeu uma vida.`;
         atualizarStatus();
         executarAnimacaoDerrota();
+        executarSomErro();
 
         if (estadoQuiz.vidas === 0) {
             finalizarQuiz(false);
@@ -265,6 +284,7 @@ function responderPergunta(alternativa, botaoSelecionado) {
     feedback.className = 'feedback-correto';
     feedback.textContent = alternativa.complemento;
     atualizarStatus();
+    executarSomSucesso();
 
     if (estadoQuiz.perguntaAtual === TOTAL_PERGUNTAS - 1) {
         finalizarQuiz(true);
@@ -291,7 +311,9 @@ function atualizarStatus() {
 
 function executarAnimacaoDerrota() {
     const letra = buscarLetraPersonagemSelecionado();
-    document.querySelector('.personagem').style.background =
+    const personagem = document.querySelector('.personagem');
+    personagem.style.left = `${removerPixels(personagem.style.left) + 70}px`
+    personagem.style.background =
         `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_caindo.png')`;
 }
 
@@ -318,7 +340,8 @@ function finalizarQuiz(vitoria) {
 
         setTimeout(() => {
             personagem.style.transition = 'bottom 0.8s ease-in';
-            personagem.style.bottom = '-200px';
+            personagem.style.bottom = '-100px';
+            executarSomQueda();
 
             setTimeout(() => {
                 document.querySelector('#pontuacao-game-over').textContent =
@@ -330,6 +353,7 @@ function finalizarQuiz(vitoria) {
     }
 
     sessionStorage.setItem('pontuacao-cenario1', estadoQuiz.pontuacao);
+    sessionStorage.setItem('vidas-cenario1', estadoQuiz.vidas);
 
     document.querySelector('#reiniciar-quiz').hidden = true;
     document.querySelector('#fechar-quiz').style.display = 'none';
@@ -349,17 +373,19 @@ function finalizarQuiz(vitoria) {
         const personagem = document.querySelector('.personagem');
         restaurarPersonagem();
 
+        let posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
+        personagem.style.left = `${posicaoAtual + 850}px`;
+
         const intervaloSaida = setInterval(() => {
             executarSomCaminhada();
             const posicaoAtual = removerPixels(window.getComputedStyle(personagem).left);
             alterarDirecao('direita');
             personagem.style.left = `${posicaoAtual + 15}px`;
-
-            if (posicaoAtual >= window.innerWidth) {
+            if ((posicaoAtual + 15) >= 1600) {
                 clearInterval(intervaloSaida);
                 window.location.href = 'cenario2.html';
             }
-        }, 100);
+        }, 200);
     }, 1800);
 }
 
