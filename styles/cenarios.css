@@ -6,6 +6,7 @@ body {
     background: no-repeat center center;
     background-size: cover;
     position: relative;
+    overflow: hidden;
 }
 
 .personagem {
