@@ -12,8 +12,10 @@ function createWindow() {
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: false,
-            contextIsolation: true
-        }
+            contextIsolation: true,
+            devTools: false
+        },
+        icon: path.join(__dirname, 'assets', 'logo.ico')
     });
 
     Menu.setApplicationMenu(null);

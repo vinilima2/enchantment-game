@@ -10,8 +10,13 @@
   "build": {
     "appId": "enchantment.game",
     "win": {
-      "target": "nsis"
-    }
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/logo.ico"
+    },
+    "icon": "assets/logo.ico"
   },
   "author": "",
   "license": "ISC",
