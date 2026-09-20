@@ -1,13 +1,11 @@
 const TECLAS_USADAS = [37, 39, 69];
 const VIDAS_INICIAIS = 5;
 const TOTAL_PERGUNTAS = 4;
-const TEMPO_POR_PERGUNTA = 90;
 const estadoQuiz = {
     perguntas: [],
     perguntaAtual: 0,
     vidas: Number(sessionStorage.getItem('vidas-cenario1')),
     pontuacao: Number(sessionStorage.getItem('pontuacao-cenario1')),
-    tempoRestante: TEMPO_POR_PERGUNTA,
     respostaBloqueada: false,
     finalizado: false
 };
@@ -16,10 +14,11 @@ const personagem = document.querySelector('.personagem');
 personagem.style.bottom = '235px';
 
 var bloquearAvanco = false;
-var intervaloTempo = null;
+const tempoInicioJogo = Number(sessionStorage.getItem('tempoInicioJogo')) || Date.now();
 
 atualizarStatus();
-document.querySelector('#tempo-quiz').textContent = 'Tempo: --';
+atualizarTempo();
+setInterval(atualizarTempo, 1000);
 
 document.body.style.backgroundImage = "url('../assets/cenarios/cenario_continuidade.jpeg')";
 
@@ -170,75 +169,18 @@ function exibirPergunta() {
         botao.addEventListener('click', () => responderPergunta(alternativa, botao));
         alternativas.appendChild(botao);
     });
-
-    iniciarTemporizador();
-}
-
-function iniciarTemporizador() {
-    pararTemporizador();
-    estadoQuiz.tempoRestante = TEMPO_POR_PERGUNTA;
-    atualizarTempo();
-
-    intervaloTempo = setInterval(() => {
-        estadoQuiz.tempoRestante -= 1;
-        atualizarTempo();
-
-        if (estadoQuiz.tempoRestante <= 0) {
-            pararTemporizador();
-            tempoEsgotado();
-        }
-    }, 1000);
-}
-
-function pararTemporizador() {
-    if (intervaloTempo) {
-        clearInterval(intervaloTempo);
-        intervaloTempo = null;
-    }
 }
 
 function atualizarTempo() {
-    const minutos = Math.floor(estadoQuiz.tempoRestante / 60);
-    const segundos = String(estadoQuiz.tempoRestante % 60).padStart(2, '0');
-    document.querySelector('#tempo-quiz').textContent = `Tempo: ${minutos}:${segundos}`;
-}
-
-function tempoEsgotado() {
-    if (estadoQuiz.respostaBloqueada || estadoQuiz.finalizado) return;
-
-    estadoQuiz.respostaBloqueada = true;
-    const feedback = document.querySelector('#feedback-quiz');
-    const botoes = document.querySelectorAll('.alternativa-quiz');
-    botoes.forEach((botao) => { botao.disabled = true; });
-
-    estadoQuiz.vidas -= 1;
-    feedback.className = 'feedback-tempo';
-    feedback.textContent = 'Tempo esgotado! Você perdeu uma vida.';
-    atualizarStatus();
-    executarAnimacaoDerrota();
-
-    if (estadoQuiz.vidas === 0) {
-        finalizarQuiz(false);
-        return;
-    }
-
-    setTimeout(() => {
-        restaurarPersonagem();
-        feedback.className = '';
-        feedback.textContent = '';
-        estadoQuiz.respostaBloqueada = false;
-        botoes.forEach((botao) => {
-            botao.classList.remove('resposta-incorreta', 'resposta-correta');
-            botao.disabled = false;
-        });
-        iniciarTemporizador();
-    }, 1200);
+    const tempoDecorrido = Math.floor((Date.now() - tempoInicioJogo) / 1000);
+    const minutos = Math.floor(tempoDecorrido / 60);
+    const segundos = String(tempoDecorrido % 60).padStart(2, '0');
+    document.querySelector('#tempo-quiz-hud').textContent = `Tempo: ${minutos}:${segundos}`;
 }
 
 function responderPergunta(alternativa, botaoSelecionado) {
     if (estadoQuiz.respostaBloqueada || estadoQuiz.finalizado) return;
 
-    pararTemporizador();
     estadoQuiz.respostaBloqueada = true;
     const feedback = document.querySelector('#feedback-quiz');
     const botoes = document.querySelectorAll('.alternativa-quiz');
@@ -267,7 +209,6 @@ function responderPergunta(alternativa, botaoSelecionado) {
                 botao.classList.remove('resposta-incorreta', 'resposta-correta');
                 botao.disabled = false;
             });
-            iniciarTemporizador();
         }, 1200);
         return;
     }
@@ -294,8 +235,9 @@ function responderPergunta(alternativa, botaoSelecionado) {
 }
 
 function atualizarStatus() {
-    document.querySelector('#vidas-quiz').textContent =
-        `Vidas: ${estadoQuiz.vidas}/${VIDAS_INICIAIS}`;
+    const textoVidas = `Vidas: ${estadoQuiz.vidas}/${VIDAS_INICIAIS}`;
+    document.querySelector('#vidas-quiz').textContent = textoVidas;
+    document.querySelector('#vidas-quiz-modal').textContent = textoVidas;
     const textoPontuacao = `Pontuação: ${estadoQuiz.pontuacao}`;
     document.querySelector('#pontuacao-quiz-modal').textContent = textoPontuacao;
     document.querySelector('#pontuacao-quiz').textContent =
@@ -317,7 +259,6 @@ function restaurarPersonagem() {
 }
 
 function finalizarQuiz(vitoria) {
-    pararTemporizador();
     estadoQuiz.finalizado = true;
     estadoQuiz.respostaBloqueada = true;
 
@@ -375,7 +316,7 @@ document.querySelector('#proxima-pergunta').addEventListener('click', () => {
 });
 
 document.querySelector('#reiniciar-quiz').addEventListener('click', iniciarQuiz);
-document.querySelector('#fechar-quiz').addEventListener('click', fecharQuiz);
+document.querySelector('#fechar-quiz')?.addEventListener('click', fecharQuiz);
 
 document.getElementById('reiniciar-jogo').addEventListener('click', () => {
     const personagem = document.querySelector('.personagem');
