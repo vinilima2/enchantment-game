@@ -29,6 +29,10 @@ function selecionarPersonagem(evento) {
 
 function selecionarTime(evento) {
     executarSomToque();
+    sessionStorage.removeItem('pontuacao-cenario1');
+    sessionStorage.removeItem('vidas-cenario1');
+    sessionStorage.removeItem('pontuacoes-categorias');
+    sessionStorage.removeItem('pontuacao-total');
     sessionStorage.setItem('turma', evento.currentTarget.dataset.turma);
     sessionStorage.setItem('tempoInicioJogo', Date.now());
     window.location.replace('cenario1.html');

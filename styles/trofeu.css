@@ -13,6 +13,7 @@ body {
     align-items: center;
     justify-content: center;
     font-family: Arial, Helvetica, sans-serif;
+    padding: 20px 0;
 }
 
 .trofeu-container {
@@ -20,76 +21,191 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.45);
+    min-height: 100%;
+    background: rgba(0, 8, 4, 0.72);
 }
 
 .trofeu-conteudo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    background: rgba(208, 213, 218, 0.95);
-    padding: 48px 56px;
-    border-radius: 20px;
+    width: 68vw;
+    max-height: 86vh;
+    overflow-y: auto;
+    animation: aparecer 0.4s ease-out;
+}
+
+/* Estilos do Card de Relatório Final com o mesmo tema do Quiz */
+.relatorio-card {
+    background: linear-gradient(155deg, #0d2b1c 0%, #061610 100%);
+    border: 1px solid rgba(246, 212, 119, 0.4);
+    border-radius: 18px;
+    box-shadow:
+        0 0 0 1px rgba(246, 212, 119, 0.08),
+        0 8px 48px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(246, 212, 119, 0.12);
+    padding: 28px 32px 32px;
+    color: #fff8dc;
     text-align: center;
-    animation: aparecer 0.8s ease-out;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.trofeu-titulo {
-    font-size: 52px;
-    color: #2a5e3f;
+.relatorio-titulo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+    color: #fff8dc;
+    margin: 0 0 8px;
 }
 
-.trofeu-subtitulo {
-    font-size: 22px;
-    color: #3a2f2f;
+.relatorio-frase {
+    font-size: 14px;
+    color: rgba(232, 221, 181, 0.75);
+    margin: 0 0 22px;
+    line-height: 1.5;
 }
 
-.trofeu-pontuacao {
+.relatorio-resumo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.relatorio-resumo-item {
+    background: rgba(255, 248, 220, 0.04);
+    border: 1px solid rgba(246, 212, 119, 0.22);
+    border-radius: 10px;
+    padding: 14px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    background: rgba(49, 115, 66, 0.12);
-    border: 2px solid #317342;
-    border-radius: 14px;
-    padding: 20px 40px;
+    justify-content: center;
+    gap: 5px;
 }
 
-.trofeu-pontuacao span {
-    font-size: 16px;
-    color: #3a2f2f;
+.resumo-label {
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.trofeu-pontuacao strong {
-    font-size: 56px;
-    color: #317342;
-}
-
-#jogar-novamente {
-    padding: 14px 36px;
-    font-size: 18px;
+    letter-spacing: 0.6px;
+    color: rgba(246, 212, 119, 0.75);
     font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #317342;
-    color: white;
-    border: 0;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-#jogar-novamente:hover {
-    background-color: #245530;
+.resumo-valor {
+    font-size: 20px;
+    color: #fff8dc;
+    font-weight: bold;
+}
+
+.resumo-valor small {
+    font-size: 12px;
+    color: rgba(232, 221, 181, 0.6);
+    font-weight: normal;
+}
+
+/* Selos discretos no mesmo estilo das caixas do quiz */
+.selo-container {
+    padding: 12px 10px;
+}
+
+.selo-badge {
+    font-size: 15px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    background: rgba(49, 115, 66, 0.35);
+    border: 1px solid rgba(246, 212, 119, 0.4);
+    color: #f6d477;
+}
+
+.selo-descricao {
+    font-size: 11px;
+    color: rgba(232, 221, 181, 0.7);
+    line-height: 1.3;
+    text-align: center;
+    margin-top: 4px;
+}
+
+.relatorio-secao-titulo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    text-align: left;
+    color: #f6d477;
+    margin: 0 0 12px;
+    font-weight: normal;
+    border-bottom: 1px solid rgba(246, 212, 119, 0.18);
+    padding-bottom: 6px;
+}
+
+.relatorio-categorias-lista {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.relatorio-categoria-item {
+    background: rgba(255, 248, 220, 0.04);
+    border: 1px solid rgba(246, 212, 119, 0.18);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.relatorio-categoria-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.relatorio-categoria-nome {
+    color: #e8ddb5;
+}
+
+.relatorio-categoria-pontos {
+    color: rgba(246, 212, 119, 0.85);
+    font-size: 12px;
+}
+
+.relatorio-categoria-pontos strong {
+    font-size: 13px;
+    color: #fff8dc;
+}
+
+.relatorio-barra-progresso {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 248, 220, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.relatorio-barra-preenchimento {
+    height: 100%;
+    background: rgba(246, 212, 119, 0.55);
+    border-radius: 4px;
+}
+
+.botao-relatorio-reiniciar {
+    border: 1px solid rgba(246, 212, 119, 0.35);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: rgba(49, 115, 66, 0.45);
+    color: #fff8dc;
+    transition: background 0.2s;
+}
+
+.botao-relatorio-reiniciar:hover {
+    background: rgba(49, 115, 66, 0.8);
 }
 
 @keyframes aparecer {
     from {
         opacity: 0;
-        transform: scale(0.85);
+        transform: scale(0.92);
     }
     to {
         opacity: 1;
@@ -97,16 +213,17 @@ body {
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .trofeu-conteudo {
-        padding: 32px 24px;
+        width: 88vw;
     }
-
-    .trofeu-titulo {
-        font-size: 36px;
+    .relatorio-resumo-grid {
+        grid-template-columns: 1fr;
     }
-
-    .trofeu-pontuacao strong {
-        font-size: 40px;
+    .relatorio-categorias-lista {
+        grid-template-columns: 1fr;
+    }
+    .relatorio-card {
+        padding: 20px 18px;
     }
 }
