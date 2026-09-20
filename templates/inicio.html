@@ -34,19 +34,17 @@
         </section>
 
         <section id="selecao-time" class="tela-selecao" hidden>
-            <h1>Escolha seu time</h1>
-            <div class="selecao-times">
-                <button class="cartao-time time-aurora" type="button" data-turma="BARE" onclick="selecionarTime(event)">
-                    <span class="simbolo-time">A</span>
-                    <span>Aurora</span>
-                </button>
-                <button class="cartao-time time-floresta" type="button" data-turma="BARE" onclick="selecionarTime(event)">
-                    <span class="simbolo-time">F</span>
-                    <span>Floresta</span>
-                </button>
-                <button class="cartao-time time-cristal" type="button" data-turma="BARE" onclick="selecionarTime(event)">
-                    <span class="simbolo-time">C</span>
-                    <span>Cristal</span>
+            <h1>Escolha seu produto</h1>
+            <p class="subtitulo-selecao">Selecione o produto da seguradora para iniciar sua jornada.</p>
+            <div class="lista-produtos" aria-label="Produtos disponíveis">
+                <button class="produto-item produto-bare" type="button" data-turma="BARE" onclick="selecionarTime(event)">
+                    <span class="simbolo-produto" aria-hidden="true">B</span>
+                    <span class="produto-conteudo">
+                        <span class="produto-status"><span class="status-ponto"></span>Disponível</span>
+                        <strong>BARE</strong>
+                        <span class="produto-descricao">Produto de atendimento e relacionamento</span>
+                    </span>
+                    <span class="produto-acao" aria-hidden="true">&rarr;</span>
                 </button>
             </div>
             <button id="voltar-personagem" class="botao-voltar" type="button">Voltar</button>
