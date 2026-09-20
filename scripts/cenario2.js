@@ -62,10 +62,6 @@ document.addEventListener('keydown', (evento) => {
         alterarDirecao('esquerda');
         personagem.style.left = `${removerPixels(window.getComputedStyle(personagem).left) - 15}px`;
     }
-
-    if (!evento.repeat) {
-        executarSomCaminhada();
-    }
 });
 
 function validarPosicao(novaPosicao) {
@@ -80,10 +76,15 @@ function buscarLetraPersonagemSelecionado() {
     return personagem.split('-')[1] || 'A';
 }
 
+let ultimoSomPasso = 0;
 function executarSomCaminhada() {
-    const audio = new Audio('../assets/audios/caminhada.mp3');
-    audio.playbackRate = 2.0;
-    audio.play().catch(() => {});
+    const agora = Date.now();
+    if (agora - ultimoSomPasso >= 280) {
+        ultimoSomPasso = agora;
+        const audio = new Audio('../assets/audios/caminhada.mp3');
+        audio.playbackRate = 1.4;
+        audio.play().catch(() => {});
+    }
 }
 
 function executarSomSucesso() {
@@ -104,19 +105,25 @@ function executarSomQueda() {
     audio.play().catch(() => {});
 }
 
-function alterarDirecao(direcao = 'esquerda') {
+let direcaoAtual = 'direita';
+let estadoPasso = 0;
+let timerPararAnimacao = null;
+
+function alterarDirecao(direcao = 'direita') {
+    direcaoAtual = direcao;
     const letra = buscarLetraPersonagemSelecionado();
     const divPersonagem = document.querySelector('.personagem');
-    for (let i = 0; i < 3; i++) {
-        setTimeout(() => {
-            if (i % 2 === 0) {
-                divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_parado_${direcao}.png')`;
-            } else {
-                divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagemA_mov_${direcao}.png')`;
-            }
-        }, 100);
-    }
-    divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_mov_${direcao}.png')`;
+
+    estadoPasso = (estadoPasso + 1) % 2;
+    const sufixo = estadoPasso === 1 ? `mov_${direcao}` : `parado_${direcao}`;
+    divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_${sufixo}.png')`;
+
+    executarSomCaminhada();
+
+    clearTimeout(timerPararAnimacao);
+    timerPararAnimacao = setTimeout(() => {
+        divPersonagem.style.background = `url('../assets/animacoes/personagem ${letra}/animacao_personagem${letra}/personagem${letra}_parado_${direcaoAtual}.png')`;
+    }, 180);
 }
 
 function removerPixels(valorComPixels) {
