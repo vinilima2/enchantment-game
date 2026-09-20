@@ -81,11 +81,6 @@ body {
     display: none;
 }
 
-.tempo-hud {
-    display: none;
-}
-
-.tempo-hud.visivel,
 .pontuacao-hud.visivel {
     display: block;
 }

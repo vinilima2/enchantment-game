@@ -6,16 +6,16 @@ const estadoQuiz = {
     perguntaAtual: 0,
     vidas: VIDAS_INICIAIS,
     pontuacao: 0,
-    tempoDecorrido: 0,
     respostaBloqueada: false,
     finalizado: false
 };
 
 var bloquearAvanco = false;
-var intervaloTempo = null;
+const tempoInicioJogo = Number(sessionStorage.getItem('tempoInicioJogo')) || Date.now();
 
 atualizarStatus();
 atualizarTempo();
+setInterval(atualizarTempo, 1000);
 
 document.body.style.backgroundImage = "url('../assets/cenarios/cenario_ponte_quebrada.jpeg')";
 
@@ -126,9 +126,7 @@ async function iniciarQuiz() {
     modal.style.opacity = '1';
     modal.style.visibility = 'visible';
     document.querySelector('.pontuacao-hud').classList.add('visivel');
-    document.querySelector('.tempo-hud').classList.add('visivel');
     atualizarStatus();
-    iniciarCronometro();
 
     try {
         await carregarPerguntas();
@@ -193,30 +191,11 @@ function exibirPergunta() {
     });
 }
 
-function iniciarCronometro() {
-    pararCronometro();
-    estadoQuiz.tempoDecorrido = 0;
-    atualizarTempo();
-
-    intervaloTempo = setInterval(() => {
-        estadoQuiz.tempoDecorrido += 1;
-        atualizarTempo();
-    }, 1000);
-}
-
-function pararCronometro() {
-    if (intervaloTempo) {
-        clearInterval(intervaloTempo);
-        intervaloTempo = null;
-    }
-}
-
 function atualizarTempo() {
-    const minutos = Math.floor(estadoQuiz.tempoDecorrido / 60);
-    const segundos = String(estadoQuiz.tempoDecorrido % 60).padStart(2, '0');
-    const texto = `Tempo: ${minutos}:${segundos}`;
-    document.querySelector('#tempo-quiz').textContent = texto;
-    document.querySelector('#tempo-quiz-hud').textContent = texto;
+    const tempoDecorrido = Math.floor((Date.now() - tempoInicioJogo) / 1000);
+    const minutos = Math.floor(tempoDecorrido / 60);
+    const segundos = String(tempoDecorrido % 60).padStart(2, '0');
+    document.querySelector('#tempo-quiz-hud').textContent = `Tempo: ${minutos}:${segundos}`;
 }
 
 function responderPergunta(alternativa, botaoSelecionado) {
@@ -276,8 +255,9 @@ function responderPergunta(alternativa, botaoSelecionado) {
 }
 
 function atualizarStatus() {
-    document.querySelector('#vidas-quiz').textContent =
-        `Vidas: ${estadoQuiz.vidas}/${VIDAS_INICIAIS}`;
+    const textoVidas = `Vidas: ${estadoQuiz.vidas}/${VIDAS_INICIAIS}`;
+    document.querySelector('#vidas-quiz').textContent = textoVidas;
+    document.querySelector('#vidas-quiz-modal').textContent = textoVidas;
     const textoPontuacao = `Pontuação: ${estadoQuiz.pontuacao}`;
     document.querySelector('#pontuacao-quiz-modal').textContent = textoPontuacao;
     document.querySelector('#pontuacao-quiz').textContent =
@@ -301,7 +281,6 @@ function restaurarPersonagem() {
 }
 
 function finalizarQuiz(vitoria) {
-    pararCronometro();
     estadoQuiz.finalizado = true;
     estadoQuiz.respostaBloqueada = true;
 

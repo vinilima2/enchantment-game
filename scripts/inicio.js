@@ -30,6 +30,7 @@ function selecionarPersonagem(evento) {
 function selecionarTime(evento) {
     executarSomToque();
     sessionStorage.setItem('turma', evento.currentTarget.dataset.turma);
+    sessionStorage.setItem('tempoInicioJogo', Date.now());
     window.location.replace('cenario1.html');
 }
 
