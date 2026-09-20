@@ -59,19 +59,33 @@ main {
 }
 
 .tela-selecao > h1 {
-    margin: 0 0 28px;
+    margin: 0 0 8px;
     color: #fff1ad;
     font-size: clamp(32px, 5vw, 58px);
     text-align: center;
     text-shadow: 2px 3px 5px #17342d;
 }
 
-.selecao-jogador,
-.selecao-times {
+.subtitulo-selecao {
+    max-width: 620px;
+    margin: 0 0 30px;
+    color: rgba(255, 248, 220, 0.82);
+    font-size: 18px;
+    text-align: center;
+}
+
+.selecao-jogador {
     display: flex;
     width: min(1100px, 100%);
     justify-content: center;
     gap: 24px;
+}
+
+.lista-produtos {
+    display: flex;
+    width: min(780px, 100%);
+    flex-direction: column;
+    gap: 14px;
 }
 
 .cartao-personagem {
@@ -108,47 +122,89 @@ main {
     text-align: center;
 }
 
-.cartao-time {
+.produto-item {
     display: flex;
-    width: min(260px, 28vw);
-    min-height: 230px;
-    flex-direction: column;
+    width: 100%;
+    min-height: 128px;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
-    border: 3px solid #f6d477;
-    border-radius: 18px;
+    gap: 22px;
+    padding: 20px 24px;
+    border: 2px solid rgba(246, 212, 119, 0.58);
+    border-radius: 16px;
+    background: linear-gradient(105deg, rgba(35, 92, 79, 0.96), rgba(17, 54, 58, 0.96));
     color: #fff8dc;
     cursor: pointer;
-    font: 700 28px Georgia, 'Times New Roman', serif;
-    transition: transform 0.2s, filter 0.2s;
+    text-align: left;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
-.cartao-time:hover {
-    transform: translateY(-8px) scale(1.03);
-    filter: brightness(1.15);
+.produto-item:hover,
+.produto-item:focus-visible {
+    transform: translateX(8px);
+    border-color: #ffe17d;
+    background: linear-gradient(105deg, rgba(49, 119, 97, 0.98), rgba(21, 69, 69, 0.98));
+    box-shadow: 0 12px 28px rgba(5, 29, 29, 0.34);
+    outline: none;
 }
 
-.time-aurora {
-    background: linear-gradient(145deg, #ca6d38, #743b42);
-}
-
-.time-floresta {
-    background: linear-gradient(145deg, #4da16b, #14594e);
-}
-
-.time-cristal {
-    background: linear-gradient(145deg, #478ec3, #293d83);
-}
-
-.simbolo-time {
+.simbolo-produto {
     display: grid;
     width: 76px;
     height: 76px;
+    flex: 0 0 76px;
     place-items: center;
     border: 2px solid rgba(255, 248, 220, 0.8);
     border-radius: 50%;
-    font-size: 38px;
+    background: rgba(246, 212, 119, 0.16);
+    color: #fff1ad;
+    font: 700 38px Georgia, 'Times New Roman', serif;
+}
+
+.produto-conteudo {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.produto-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #b9efbf;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.status-ponto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #86e28e;
+    box-shadow: 0 0 10px rgba(134, 226, 142, 0.85);
+}
+
+.produto-conteudo strong {
+    color: #fff1ad;
+    font-size: 30px;
+}
+
+.produto-descricao {
+    color: rgba(255, 248, 220, 0.76);
+    font-size: 16px;
+}
+
+.produto-acao {
+    color: #fff1ad;
+    font: 700 32px Georgia, 'Times New Roman', serif;
+    transition: transform 0.2s;
+}
+
+.produto-item:hover .produto-acao,
+.produto-item:focus-visible .produto-acao {
+    transform: translateX(5px);
 }
 
 .botao-voltar {
@@ -170,13 +226,11 @@ main {
         min-height: auto;
     }
 
-    .selecao-jogador,
-    .selecao-times {
+    .selecao-jogador {
         flex-wrap: wrap;
     }
 
-    .cartao-personagem,
-    .cartao-time {
+    .cartao-personagem {
         width: min(320px, 100%);
     }
 
@@ -186,5 +240,34 @@ main {
 
     .cartao-personagem img {
         height: 275px;
+    }
+
+    .produto-item {
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .produto-item:hover,
+    .produto-item:focus-visible {
+        transform: translateY(-4px);
+    }
+
+    .simbolo-produto {
+        width: 58px;
+        height: 58px;
+        flex-basis: 58px;
+        font-size: 30px;
+    }
+
+    .produto-conteudo strong {
+        font-size: 25px;
+    }
+
+    .produto-descricao {
+        font-size: 14px;
+    }
+
+    .produto-acao {
+        font-size: 27px;
     }
 }
